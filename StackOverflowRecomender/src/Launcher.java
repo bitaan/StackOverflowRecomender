@@ -38,17 +38,18 @@ public class Launcher {
         ContainerController container = rt.createAgentContainer(p2);
 
 
-        Object[] agentArgs = new Object[1];
-
+        Object[] agentRecArgs = new Object[1];
+        Object[] agentActArgs = new Object[3];
         for (int i = 0; i < agentList.size(); i++) {
-            AgentController rec = container.createNewAgent(agentList.get(i).getName() , "RecomenderAgent" , agentArgs );
+            AgentController rec = container.createNewAgent(agentList.get(i).getName() , "RecomenderAgent" , agentRecArgs );
+            agentActArgs[i]=agentList.get(i).getName();
             rec.start();
         }
 
         sleep(200);
 
 
-        AgentController ac1 = mainContainer.createNewAgent("active1",  "ActiveUserAgent" ,agentArgs );
+        AgentController ac1 = mainContainer.createNewAgent("active1",  "ActiveUserAgent" ,agentActArgs );
         ac1.start();
 
 

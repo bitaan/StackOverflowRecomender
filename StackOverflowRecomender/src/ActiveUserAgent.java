@@ -13,7 +13,11 @@ public class ActiveUserAgent extends Agent {
     }
 
     protected void setup() {
+
+        //TODO: pass user id as argument
+
         Object[] args = this.getArguments();
+
         if(args != null && args.length > 0) {
             this.nResponders = args.length;
             System.out.println("Trying to delegate dummy-action to one out of " + this.nResponders + " responders.");
