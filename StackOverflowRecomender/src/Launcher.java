@@ -16,9 +16,13 @@ import static java.lang.Thread.sleep;
  */
 public class Launcher {
     static public List<AID> agentList = new ArrayList<AID>();
+    static public AID activeUser ;
+
     public Launcher(String[] agents){
         System.out.println("args" + agents.length);
-        for (int i = 0; i < agents.length; i++) {
+        activeUser = new AID(agents[0],true);
+
+        for (int i = 1; i < agents.length; i++) {
             AID a = new AID(agents[i],true);
             agentList.add(a);
         }
@@ -39,10 +43,12 @@ public class Launcher {
 
 
         Object[] agentRecArgs = new Object[1];
-        Object[] agentActArgs = new Object[3];
+        Object[] agentActArgs = new Object[4];
+        agentActArgs[0] = activeUser.getName();
         for (int i = 0; i < agentList.size(); i++) {
+            System.out.println("launching agent " +  agentList.get(i).getName());
             AgentController rec = container.createNewAgent(agentList.get(i).getName() , "RecomenderAgent" , agentRecArgs );
-            agentActArgs[i]=agentList.get(i).getName();
+            agentActArgs[i+1]=agentList.get(i).getName();
             rec.start();
         }
 

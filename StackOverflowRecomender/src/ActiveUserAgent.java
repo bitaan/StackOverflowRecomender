@@ -8,6 +8,8 @@ import java.util.Vector;
 
 public class ActiveUserAgent extends Agent {
     private int nResponders;
+    private int id;
+    private final int desiredSetSize = 10;
 
     public ActiveUserAgent() {
     }
@@ -19,17 +21,20 @@ public class ActiveUserAgent extends Agent {
         Object[] args = this.getArguments();
 
         if(args != null && args.length > 0) {
-            this.nResponders = args.length;
+            id = Integer.parseInt((String)args[0]);
+            System.out.println("Hello! im a active user with id " + id);
+            this.nResponders = args.length - 1 ;
             System.out.println("Trying to delegate dummy-action to one out of " + this.nResponders + " responders.");
             ACLMessage msg = new ACLMessage(3);
 
-            for(int i = 0; i < args.length; ++i) {
+
+            for(int i = 1; i < args.length; i++) {
                 msg.addReceiver(new AID((String)args[i], false));
             }
 
             msg.setProtocol("fipa-contract-net");
             msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000L));
-            msg.setContent("dummy-action");
+            msg.setContent("dummy-action" + id );
             this.addBehaviour(new ContractNetInitiator(this, msg) {
                 protected void handlePropose(ACLMessage propose, Vector v) {
                     System.out.println("Agent " + propose.getSender().getName() + " proposed " + propose.getContent());

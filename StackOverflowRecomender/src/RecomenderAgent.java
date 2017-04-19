@@ -18,6 +18,7 @@ public class RecomenderAgent extends Agent {
         this.addBehaviour(new ContractNetResponder(this, template) {
             protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
                 System.out.println("Agent " + RecomenderAgent.this.getLocalName() + ": CFP received from " + cfp.getSender().getName() + ". Action is " + cfp.getContent());
+                //TODO : action should have active user id and recomender item index in recomendation set
                 int proposal = RecomenderAgent.this.evaluateAction();
                 if(proposal > 2) {
                     System.out.println("Agent " + RecomenderAgent.this.getLocalName() + ": Proposing " + proposal);
@@ -50,10 +51,14 @@ public class RecomenderAgent extends Agent {
         });
     }
 
+
+    //TODO: replace this function by something that uses user similarity to this Recomender agent that acts as a cluster representative
     private int evaluateAction() {
         return (int)(Math.random() * 10.0D);
     }
 
+
+    // check if there are recomendation items
     private boolean performAction() {
         return Math.random() > 0.2D;
     }
