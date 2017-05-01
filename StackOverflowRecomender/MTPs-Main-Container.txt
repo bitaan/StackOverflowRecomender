@@ -1,1 +1,1 @@
-http://I00CS0310.salas.feupsig.fe.up.pt:7778/acc
+http://I00CS0307.salas.feupsig.fe.up.pt:7778/acc
