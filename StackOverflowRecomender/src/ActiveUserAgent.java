@@ -2,6 +2,10 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
+
+import java.io.*;
+
+import java.net.Socket;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -11,7 +15,46 @@ public class ActiveUserAgent extends Agent {
     private int id;
     private final int desiredSetSize = 10;
 
+
+
+
+
     public ActiveUserAgent() {
+//send
+        System.out.println("ENTERED ActiveUserAgent");
+        String hostName = "localhost";
+        int portNumber = 6022;
+        Socket socket = null;
+        BufferedReader in;
+        PrintWriter out = null;
+        try {
+            socket = new Socket(hostName, portNumber);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String s = "some text here";
+        out.print( s);
+        out.flush();
+        //receive
+        InputStream istream = null;
+        try {
+            istream = socket.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
+
+
+
+
+
     }
 
     protected void setup() {

@@ -15,6 +15,7 @@ public class RecomenderAgent extends Agent {
     protected void setup() {
         System.out.println("Agent " + this.getLocalName() + " waiting for CFP...");
         MessageTemplate template = MessageTemplate.and(MessageTemplate.MatchProtocol("fipa-contract-net"), MessageTemplate.MatchPerformative(3));
+
         this.addBehaviour(new ContractNetResponder(this, template) {
             protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
                 System.out.println("Agent " + RecomenderAgent.this.getLocalName() + ": CFP received from " + cfp.getSender().getName() + ". Action is " + cfp.getContent());

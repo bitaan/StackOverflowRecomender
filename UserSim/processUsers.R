@@ -1,6 +1,7 @@
 library(jsonlite)
 library(readr)
 library(cluster)
+library(Matrix)
 library(arules)
 
 
@@ -71,6 +72,26 @@ x1<- subset(trans, groups==1)
 x2<- subset(trans, groups==2)
 x3<- subset(trans, groups==3)
 x4<- subset(trans, groups==4)
+
+#####################################################################
+
+server <- function(){
+  while(TRUE){
+    writeLines("Listening...")
+    con <- socketConnection(host="localhost", port = 6022, blocking=TRUE,
+                            server=TRUE, open="r+")
+    data <- readLines(con, 1,warn = TRUE,skipNul=TRUE)
+    print(data)
+    response <- toupper(data)
+    writeLines(response, con) 
+    close(con)
+  }
+}
+server()
+
+######################################################################
+
+
 
 
 
