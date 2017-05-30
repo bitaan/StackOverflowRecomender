@@ -11,9 +11,9 @@
 #/api/questions/{ids}/related  Get the questions that are related to the questions identified by a set of ids.
 
 #/api/users/{id}/top-answer-tags  Get the top tags (by score) a single user has posted answers in.
-/api/users/{id}/tags/{tags}/top-answers  Get the top answers a user has posted on questions with a set of tags.
+##/api/users/{id}/tags/{tags}/top-answers  Get the top answers a user has posted on questions with a set of tags.
 
-
+####'client_id':9527, 'scope':'no_expiry', 'key':'Fk2OzBSIscRuxnV2hWNMYg((',
 
 import requests
 import json
