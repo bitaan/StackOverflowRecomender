@@ -16,16 +16,12 @@ public class ActiveUserAgent extends Agent {
     private final int desiredSetSize = 10;
 
 
-
-
-
     public ActiveUserAgent() {
 //send
         System.out.println("ENTERED ActiveUserAgent");
         String hostName = "localhost";
         int portNumber = 6022;
         Socket socket = null;
-        BufferedReader in;
         PrintWriter out = null;
         try {
             socket = new Socket(hostName, portNumber);
@@ -38,7 +34,8 @@ public class ActiveUserAgent extends Agent {
             e.printStackTrace();
         }
 
-        String s = "some text here";
+        //22656
+        String s = "some text here\n";
         out.print( s);
         out.flush();
         //receive
@@ -50,12 +47,22 @@ public class ActiveUserAgent extends Agent {
         }
 
         BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
+        String receiveMessage;
 
-
-
+        try {
+            if((receiveMessage = receiveRead.readLine()) != null) //receive from server
+            {
+                System.out.println(receiveMessage); // displaying at DOS prompt
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
+/*
+    public int getUserMedoId(int id){}
+*/
 
     protected void setup() {
 
