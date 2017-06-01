@@ -20,7 +20,7 @@ public class ActiveUserAgent extends Agent {
 //send
         System.out.println("ENTERED ActiveUserAgent");
         String hostName = "localhost";
-        int portNumber = 6022;
+        int portNumber = 8888;
         Socket socket = null;
         PrintWriter out = null;
         try {
