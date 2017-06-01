@@ -7,6 +7,9 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
 
+import java.io.*;
+import java.net.Socket;
+
 public class RecomenderAgent extends Agent {
     public RecomenderAgent() {
 
@@ -20,6 +23,53 @@ public class RecomenderAgent extends Agent {
             protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
                 System.out.println("Agent " + RecomenderAgent.this.getLocalName() + ": CFP received from " + cfp.getSender().getName() + ". Action is " + cfp.getContent());
                 //TODO : action should have active user id and recomender item index in recomendation set
+                System.out.println("//////////////////////////////////////////////////////////////////");
+                //send
+                String hostName = "localhost";
+                int portNumber = 8888;
+                Socket socket = null;
+                PrintWriter out = null;
+                try {
+                    socket = new Socket(hostName, portNumber);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    out = new PrintWriter(socket.getOutputStream(), true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //22656
+                String s = "122223 10";
+                out.print(s);
+                out.flush();
+                System.out.println("//////////////////////////////////////////////////////////////////");
+
+                //receive
+                InputStream istream = null;
+                try {
+                    System.out.println("get in input stream");
+                    istream = socket.getInputStream();
+                    System.out.println("get out input stream");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
+                String receiveMessage;
+
+
+                try {
+                    System.out.println("try to receive");
+                    while((receiveMessage = receiveRead.readLine()) != null) //receive from server
+                    {
+                        System.out.println(receiveMessage); // displaying at DOS prompt
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("//////////////////////////////////////////////////////////////////");
+
                 int proposal = RecomenderAgent.this.evaluateAction();
                 if(proposal > 2) {
                     System.out.println("Agent " + RecomenderAgent.this.getLocalName() + ": Proposing " + proposal);

@@ -10,11 +10,15 @@ import sys
 import json
  
 
+recommendationFile = open("recomendations.csv", 'r')
 
+recommendationData = recommendationFile.read();
+
+print(recommendationData)
 
 def getRecomendations( id_user , numRec ):
 	print(id_user, "\t",numRec)
-	return [1,2,3,4,5]
+	return "[1,2,3,4,5]" + "\n"
 
 
 HOST = 'localhost'   # Symbolic name, meaning all available interfaces
@@ -43,12 +47,12 @@ while 1:
     	 data = connection.recv(16)
     	 #print(data)
     	 split=str(data).split(' ')
-    	 print (split[0] , "  " , split[1])
+    	 print (split[0]  , split[1])
     	 rec = getRecomendations( split[0] , split[1] )
     	 print(rec)
-    	 msg =  StringIO()
-    	 json.dump(rec,msg)
-    	 connection.send(msg.getvalue())
+    	 ##msg =  StringIO()
+    	 ##json.dump(rec,msg) .getvalue()
+    	 connection.send(recommendationData.encode())
 s.close()
 
 

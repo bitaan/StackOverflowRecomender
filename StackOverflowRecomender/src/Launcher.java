@@ -21,7 +21,7 @@ public class Launcher {
     public Launcher(String[] agents){
         System.out.println("args" + agents.length);
         activeUser = new AID(agents[0],true);
-
+        System.out.println("rec size:" +agents.length );
         for (int i = 1; i < agents.length; i++) {
             AID a = new AID(agents[i],true);
             agentList.add(a);
@@ -43,15 +43,20 @@ public class Launcher {
 
 
         Object[] agentRecArgs = new Object[1];
-        Object[] agentActArgs = new Object[4];
+        Object[] agentActArgs = new Object[2];
         agentActArgs[0] = activeUser.getName();
+
+        /*
         for (int i = 0; i < agentList.size(); i++) {
             System.out.println("launching agent " +  agentList.get(i).getName());
             AgentController rec = container.createNewAgent(agentList.get(i).getName() , "RecomenderAgent" , agentRecArgs );
             agentActArgs[i+1]=agentList.get(i).getName();
             rec.start();
         }
-
+        */
+        AgentController rec = container.createNewAgent(agentList.get(0).getName() , "RecomenderAgent" , agentRecArgs );
+        agentActArgs[1] = agentList.get(0).getName();
+        rec.start();
         sleep(200);
 
 

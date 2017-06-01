@@ -17,56 +17,10 @@ public class ActiveUserAgent extends Agent {
 
 
     public ActiveUserAgent() {
-
-        //send
         System.out.println("ENTERED ActiveUserAgent");
-        String hostName = "localhost";
-        int portNumber = 8888;
-        Socket socket = null;
-        PrintWriter out = null;
-        try {
-            socket = new Socket(hostName, portNumber);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //22656
-        String s = "122223 10";
-        out.print(s);
-        out.flush();
-        //receive
-        InputStream istream = null;
-        try {
-            System.out.println("get in input stream");
-            istream = socket.getInputStream();
-            System.out.println("get out input stream");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
-        String receiveMessage;
-
-        try {
-            System.out.println("try to receive");
-            if((receiveMessage = receiveRead.readLine()) != null) //receive from server
-            {
-                System.out.println(receiveMessage); // displaying at DOS prompt
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
     }
-/*
-    public int getUserMedoId(int id){}
-*/
+
 
     protected void setup() {
 

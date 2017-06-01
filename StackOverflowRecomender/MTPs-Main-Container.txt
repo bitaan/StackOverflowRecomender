@@ -1,1 +1,1 @@
-http://I00CS0312.salas.feupsig.fe.up.pt:7778/acc
+http://DESKTOP-GR84A7O:7778/acc

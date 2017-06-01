@@ -78,7 +78,11 @@ item_sim_model = graphlab.item_similarity_recommender.create(train_data, user_id
 #Make Recommendations:
 item_sim_recomm = item_sim_model.recommend(users=[1],k=5)
 item_sim_recomm.print_rows(num_rows=5)	
-	
+
+
+with open("recomendations.csv",'w') as recommendations_csv:
+
+	print(item_sim_recomm,file=recommendations_csv)
 	
 	
 
