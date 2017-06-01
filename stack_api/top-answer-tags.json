@@ -497,4 +497,9 @@
 ,{"user_id": 37213, "answer_count": 552, "answer_score": 1673, "question_count": 0, "question_score": 0, "tag_name": "spring"}
 ,{"user_id": 37213, "answer_count": 93, "answer_score": 884, "question_count": 0, "question_score": 0, "tag_name": "intellij-idea"}
 ,{"user_id": 37213, "answer_count": 558, "answer_score": 818, "question_count": 1, "question_score": 0, "tag_name": "mysql"}
+<<<<<<< HEAD
+,{"user_id": 37213, "answer_count": 334, "answer_score": 755, "question_count": 0, "question_score": 0, "tag_name": "jdbc"}
+]
+=======
 ,{"user_id": 37213, "answer_count": 334, "answer_score": 755, "question_count": 0, "question_score": 0, "tag_name": "jdbc"}]
+>>>>>>> 87f7e3452ca642e2b63fd07f567624bcbbcee631
