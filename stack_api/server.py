@@ -4,10 +4,19 @@
 '''
     Simple socket server using threads
 '''
- 
+from StringIO import StringIO
 import socket
 import sys
+import json
  
+
+
+
+def getRecomendations( id_user , numRec ):
+	print(id_user, "\t",numRec)
+	return [1,2,3,4,5]
+
+
 HOST = 'localhost'   # Symbolic name, meaning all available interfaces
 PORT = 8888 # Arbitrary non-privileged port
  
@@ -32,5 +41,15 @@ while 1:
     connection, addr = s.accept()
     if connection :
     	 data = connection.recv(16)
-    	 print (data)
+    	 #print(data)
+    	 split=str(data).split(' ')
+    	 print (split[0] , "  " , split[1])
+    	 rec = getRecomendations( split[0] , split[1] )
+    	 print(rec)
+    	 msg =  StringIO()
+    	 json.dump(rec,msg)
+    	 connection.send(msg.getvalue())
 s.close()
+
+
+

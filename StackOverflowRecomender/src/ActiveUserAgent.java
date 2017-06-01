@@ -17,7 +17,8 @@ public class ActiveUserAgent extends Agent {
 
 
     public ActiveUserAgent() {
-//send
+
+        //send
         System.out.println("ENTERED ActiveUserAgent");
         String hostName = "localhost";
         int portNumber = 8888;
@@ -35,13 +36,15 @@ public class ActiveUserAgent extends Agent {
         }
 
         //22656
-        String s = "some text here\n";
-        out.print( s);
+        String s = "122223 10";
+        out.print(s);
         out.flush();
         //receive
         InputStream istream = null;
         try {
+            System.out.println("get in input stream");
             istream = socket.getInputStream();
+            System.out.println("get out input stream");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,6 +53,7 @@ public class ActiveUserAgent extends Agent {
         String receiveMessage;
 
         try {
+            System.out.println("try to receive");
             if((receiveMessage = receiveRead.readLine()) != null) //receive from server
             {
                 System.out.println(receiveMessage); // displaying at DOS prompt
