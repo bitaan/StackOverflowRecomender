@@ -3,6 +3,18 @@ import json
 from pandas.io.json import json_normalize
 import pandas as pd
 import graphlab
+import socket
+import sys
+
+def makeRecomendation( id_user , numRec, itemModel):
+	#Make Recommendations:
+	item_sim_recomm = itemModel.recommend(users=[id_user],k=numRec)
+	item_sim_recomm.print_rows(num_rows=numRec)
+
+	with open("recomendations.csv",'w') as recommendations_csv:
+
+		print(item_sim_recomm,file=recommendations_csv)
+
 
 userFile = open("users.json",'r')
 
@@ -75,19 +87,36 @@ test_data = graphlab.SFrame(ratings_test)
 #Train Model
 item_sim_model = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='pearson')
 
-#Make Recommendations:
-item_sim_recomm = item_sim_model.recommend(users=[1],k=5)
-item_sim_recomm.print_rows(num_rows=5)	
-
-
-with open("recomendations.csv",'w') as recommendations_csv:
-
-	print(item_sim_recomm,file=recommendations_csv)
-	
-	
-
-#print(data[1]['user_id'])
-
-#json_normalize(data['items'])
-
+HOST = 'localhost'   # Symbolic name, meaning all available interfaces
+PORT = 8888 # Arbitrary non-privileged port
+ 
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print ('Socket created')
+ 
+#Bind socket to local host and port
+try:
+    s.bind((HOST, PORT))
+except socket.error as msg:
+    print ('Bind failed. Error Code : ' , str(msg[0]) , ' Message ' , msg[1])
+    sys.exit()
+     
+print ('Socket bind complete:', s )
+ 
+#Start listening on socket
+s.listen(10)
+print ('Socket now listening')
+#now keep talking with the client
+while 1:
+    #wait to accept a connection - blocking call
+    connection, addr = s.accept()
+    if connection :
+		data = connection.recv(16)
+		#print(data)
+		split=str(data).split(' ')
+		print(split[0]  , split[1])
+		makeRecomendation(int(split[0]),int(split[1]),item_sim_model)
+		recommendationFile = open("recomendations.csv", 'r')
+		recommendationData = recommendationFile.read();
+		connection.send(recommendationData.encode())
+s.close()
 
