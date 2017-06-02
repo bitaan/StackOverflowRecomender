@@ -39,13 +39,13 @@ public class ActiveUserAgent extends Agent {
             for(int i = 1; i < args.length; i++) {
                 msg.addReceiver(new AID((String)args[i], false));
             }
-
+            int numRecSet = 5;
             msg.setProtocol("fipa-contract-net");
-            msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000L));
-            msg.setContent("dummy-action" + id );
+            msg.setReplyByDate(new Date(System.currentTimeMillis() + 100000L));
+            msg.setContent( id + " " +  numRecSet);
             this.addBehaviour(new ContractNetInitiator(this, msg) {
                 protected void handlePropose(ACLMessage propose, Vector v) {
-                    System.out.println("Agent " + propose.getSender().getName() + " proposed " + propose.getContent());
+                    System.out.println("Agent " + propose.getSender().getName() + " proposed \n\n" + propose.getContent());
                 }
 
                 protected void handleRefuse(ACLMessage refuse) {
@@ -78,17 +78,20 @@ public class ActiveUserAgent extends Agent {
                             ACLMessage reply = msg.createReply();
                             reply.setPerformative(15);
                             acceptances.addElement(reply);
+                            accept=reply;
+                            /*
                             int proposal = Integer.parseInt(msg.getContent());
                             if(proposal > bestProposal) {
                                 bestProposal = proposal;
                                 bestProposer = msg.getSender();
                                 accept = reply;
                             }
+                            */
                         }
                     }
 
                     if(accept != null) {
-                        System.out.println("Accepting proposal " + bestProposal + " from responder " + bestProposer.getName());
+                        //System.out.println("Accepting proposal " + bestProposal + " from responder " + bestProposer.getName());
                         accept.setPerformative(0);
                     }
 
@@ -96,6 +99,7 @@ public class ActiveUserAgent extends Agent {
 
                 protected void handleInform(ACLMessage inform) {
                     System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
+                    System.out.println("content: "+inform.getContent());
                 }
             });
         } else {
