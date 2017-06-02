@@ -6,14 +6,32 @@ import graphlab
 import socket
 import sys
 
-def makeRecomendation( id_user , numRec, itemModel):
+def makeRecomendationPearson( id_user , numRec, itemModel):
 	#Make Recommendations:
 	item_sim_recomm = itemModel.recommend(users=[id_user],k=numRec)
 	item_sim_recomm.print_rows(num_rows=numRec)
 
-	with open("recomendations.csv",'w') as recommendations_csv:
+	with open("recomendationsPearson.csv",'w') as recommendationsPearson_csv:
 
-		print(item_sim_recomm,file=recommendations_csv)
+		print(item_sim_recomm,file=recommendationsPearson_csv)
+
+def makeRecomendationJaccard( id_user , numRec, itemModel):
+	#Make Recommendations:
+	item_sim_recomm = itemModel.recommend(users=[id_user],k=numRec)
+	item_sim_recomm.print_rows(num_rows=numRec)
+
+	with open("recomendationsJaccard.csv",'w') as recommendationsJaccard_csv:
+
+		print(item_sim_recomm,file=recommendationsJaccard_csv)
+
+def makeRecomendationCosine( id_user , numRec, itemModel):
+	#Make Recommendations:
+	item_sim_recomm = itemModel.recommend(users=[id_user],k=numRec)
+	item_sim_recomm.print_rows(num_rows=numRec)
+
+	with open("recomendationsCosine.csv",'w') as recommendationsCosine_csv:
+
+		print(item_sim_recomm,file=recommendationsCosine_csv)
 
 
 userFile = open("users.json",'r')
@@ -85,7 +103,9 @@ test_data = graphlab.SFrame(ratings_test)
 
 
 #Train Model
-item_sim_model = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='pearson')
+item_sim_model_pearson = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='pearson')
+item_sim_model_cosine = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='cosine')
+item_sim_model_jaccard = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='jaccard')
 
 HOST = 'localhost'   # Symbolic name, meaning all available interfaces
 PORT = 8888 # Arbitrary non-privileged port
@@ -99,8 +119,6 @@ try:
 except socket.error as msg:
     print ('Bind failed. Error Code : ' , str(msg[0]) , ' Message ' , msg[1])
     sys.exit()
-     
-print ('Socket bind complete:', s )
  
 #Start listening on socket
 s.listen(10)
@@ -113,10 +131,22 @@ while 1:
 		data = connection.recv(16)
 		#print(data)
 		split=str(data).split(' ')
-		print(split[0]  , split[1])
-		makeRecomendation(int(split[0]),int(split[1]),item_sim_model)
-		recommendationFile = open("recomendations.csv", 'r')
-		recommendationData = recommendationFile.read();
-		connection.send(recommendationData.encode())
+		print(split[0]  , split[1], split[2])
+		if int(split[2]) == 1:
+			makeRecomendationPearson(int(split[0]),int(split[1]),item_sim_model_pearson)
+			recommendationFile = open("recomendationsPearson.csv", 'r')
+			recommendationData = recommendationFile.read();
+			connection.send(recommendationData.encode())
+		elif int(split[2]) == 2:
+			makeRecomendationCosine(int(split[0]),int(split[1]),item_sim_model_cosine)
+			recommendationFile = open("recomendationsCosine.csv", 'r')
+			recommendationData = recommendationFile.read();
+			connection.send(recommendationData.encode())
+		else:
+			makeRecomendationJaccard(int(split[0]),int(split[1]),item_sim_model_jaccard)
+			recommendationFile = open("recomendationsJaccard.csv", 'r')
+			recommendationData = recommendationFile.read();
+			connection.send(recommendationData.encode())
+		
 s.close()
 
