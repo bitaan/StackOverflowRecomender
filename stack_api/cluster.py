@@ -6,6 +6,9 @@ import graphlab
 import socket
 import sys
 
+
+
+##combine models
 def makeRecomendationPearson( id_user , numRec, itemModel):
 	#Make Recommendations:
 	item_sim_recomm = itemModel.recommend(users=[id_user],k=numRec)
@@ -33,49 +36,55 @@ def makeRecomendationCosine( id_user , numRec, itemModel):
 
 		print(item_sim_recomm,file=recommendationsCosine_csv)
 
-
+		
+		
+		
+#pre-process data
 userFile = open("users.json",'r')
-
 userData = json.load(userFile)
 
 questionFile = open("user-questions.json", 'r')
-
 questionData = json.load(questionFile)
 
 answerFile = open("answers.json", 'r')
-
 answerData = json.load(answerFile)
 
 with open("users.csv",'w') as users_csv:
 
 	for line in userData:
-
 		if "age" in line:
 			print(line['user_id'],"|",line['age'] , "|",line['user_type'] ,"|" , line['reputation'], file = users_csv)
 
+
+#add more tags? python request for tags 			
 tags = ['git', 'java', 'python', 'sql', 'android','r','jquery','panda','html','css']
 
+
 with open("questions.csv",'w') as questions_csv:
-	
 	for line in questionData:
 		mambo = [str(line['question_id']), str(line['answer_count']), str(line['score'])]
 		for tag in tags:
 			mambo.append("1" if tag in line['tags'] else "0")
 		print("|".join(mambo), file = questions_csv)
 
+		
+		
+##TODO : using fuzzy c-means do user-user similarity -> cluster users 
 
+
+## prep users df
 u_cols = ['user_id', 'age', 'user_type', 'reputation']
 users = pd.read_csv('users.csv', sep='|', names=u_cols, encoding='latin-1')
-
 #sprint(users)
 
+##prep questions df
 q_cols = ['question_id', 'answer_count', 'score'] + tags
 questions = pd.read_csv('questions.csv', sep='|', names=q_cols, encoding='latin-1')
-
 #print(questions)
 
+##prep rating 
+##combine users and questions 
 with open("ratings.csv", 'w') as ratings_csv:
-
 	for user in userData:
 		user_tags = [question["tags"] for question in questionData for answer in answerData if question["question_id"] == answer["question_id"] and answer["owner"]["user_id"] == user["user_id"]]
 		user_tags = set([tag for user_tags_elem in user_tags for tag in user_tags_elem])
@@ -83,49 +92,59 @@ with open("ratings.csv", 'w') as ratings_csv:
 		if "age" in user:
 			for question in questionData:
 				tags_common = [tag for tag in user_tags if tag in question["tags"]]
-
 				mambo = [str(user['user_id']), str(question['question_id']), str(len(tags_common))]
-
 				print("|".join(mambo),file= ratings_csv)
 
 r_cols = ['user_id', 'question_id', 'rating']
 ratings = pd.read_csv('ratings.csv', sep='|', names=r_cols, encoding='latin-1')
-
 #print(ratings)
-	
+
+##set training data
 r_cols = ['user_id', 'question_id', 'rating']
 ratings_base = pd.read_csv('ratings-base.csv', sep='|', names=r_cols, encoding='latin-1')
 ratings_test = pd.read_csv('ratings-test.csv', sep='|', names=r_cols, encoding='latin-1')
 print(ratings_base.shape, ratings_test.shape)
-
+##cast to 
 train_data = graphlab.SFrame(ratings_base)
 test_data = graphlab.SFrame(ratings_test)
+
+
+
+## TODO: Why not implement Simple Popularity Model and use it for result comparisson?? 1liner
 
 
 #Train Model
 item_sim_model_pearson = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='pearson')
 item_sim_model_cosine = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='cosine')
 item_sim_model_jaccard = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='question_id', target='rating', similarity_type='jaccard')
+##compare models 
+##                                              #data #models, #modelnames simple,pearson,cosine,jaccard  OPTIONAL #metric #target  
+##graphlab.recommender.util.compare_models(test_data, [m1, m2], model_names=["m1", "m2"])
+##util.compare_models
 
-HOST = 'localhost'   # Symbolic name, meaning all available interfaces
-PORT = 8888 # Arbitrary non-privileged port
- 
+
+
+#Evaluating Recommendation Engines
+##model_performance = graphlab.compare(test_data, [popularity_model, item_sim_model])
+#show recall precision
+##graphlab.show_comparison(model_performance,[popularity_model, item_sim_model])
+#op Why not pass this values to Recomender Agent
+
+
+
+HOST = 'localhost'
+PORT = 8888
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print ('Socket created')
- 
-#Bind socket to local host and port
+# expects requests  userId,setSize,type[1,3] 
 try:
     s.bind((HOST, PORT))
 except socket.error as msg:
     print ('Bind failed. Error Code : ' , str(msg[0]) , ' Message ' , msg[1])
     sys.exit()
- 
-#Start listening on socket
 s.listen(10)
 print ('Socket now listening')
-#now keep talking with the client
+#wait conections
 while 1:
-    #wait to accept a connection - blocking call
     connection, addr = s.accept()
     if connection :
 		data = connection.recv(16)
@@ -147,6 +166,9 @@ while 1:
 			recommendationFile = open("recomendationsJaccard.csv", 'r')
 			recommendationData = recommendationFile.read();
 			connection.send(recommendationData.encode())
-		
 s.close()
+
+
+
+
 

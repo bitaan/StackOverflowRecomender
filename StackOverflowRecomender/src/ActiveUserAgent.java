@@ -79,6 +79,8 @@ public class ActiveUserAgent extends Agent {
                             reply.setPerformative(15);
                             acceptances.addElement(reply);
                             accept=reply;
+							//how to compare the proposals 
+							//
                             /*
                             int proposal = Integer.parseInt(msg.getContent());
                             if(proposal > bestProposal) {
@@ -97,6 +99,7 @@ public class ActiveUserAgent extends Agent {
 
                 }
 
+				
                 protected void handleInform(ACLMessage inform) {
                     System.out.println("Agent " + inform.getSender().getName() + " successfully performed the requested action");
                     System.out.println("content: "+inform.getContent());
